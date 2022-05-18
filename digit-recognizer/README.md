@@ -22,7 +22,7 @@ Goal - To study three models performance in computer vision problem (Digit Recog
 - 2D-CNN performed far better in comparision to other two models with least learning parameters whereas 1D-CNN though performed a little bit better than FCNN but the overall advantage was less learning parameters compared to FCNN.
 
 ## 🚀 About Me
-I'm a AI enthusiastic. Fell in love with DL during Engg. time and since then tryng to explore DL world to the fullest.
+I'm an AI enthusiastic. Fell in love with DL during Engg. time and since then tryng to explore DL world to the fullest.
 
 
 
