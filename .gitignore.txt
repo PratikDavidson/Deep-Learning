@@ -1,0 +1,2 @@
+tabular-playground-series-apr-2022/data/
+digit-recognizer/data/
