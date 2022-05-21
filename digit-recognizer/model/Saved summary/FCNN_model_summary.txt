@@ -1,0 +1,36 @@
+```Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ batch_normalization (BatchN  (None, 784)              3136      
+ ormalization)                                                   
+                                                                 
+ dense (Dense)               (None, 512)               401920    
+                                                                 
+ batch_normalization_1 (Batc  (None, 512)              2048      
+ hNormalization)                                                 
+                                                                 
+ activation (Activation)     (None, 512)               0         
+                                                                 
+ dense_1 (Dense)             (None, 128)               65664     
+                                                                 
+ batch_normalization_2 (Batc  (None, 128)              512       
+ hNormalization)                                                 
+                                                                 
+ activation_1 (Activation)   (None, 128)               0         
+                                                                 
+ dense_2 (Dense)             (None, 64)                8256      
+                                                                 
+ batch_normalization_3 (Batc  (None, 64)               256       
+ hNormalization)                                                 
+                                                                 
+ activation_2 (Activation)   (None, 64)                0         
+                                                                 
+ dense_3 (Dense)             (None, 10)                650       
+                                                                 
+=================================================================
+Total params: 482,442
+Trainable params: 479,466
+Non-trainable params: 2,976
+_________________________________________________________________
+```
