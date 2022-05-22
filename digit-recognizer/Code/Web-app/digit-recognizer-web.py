@@ -7,8 +7,7 @@ from PIL import Image
 from google.oauth2 import service_account
 from google.cloud import storage
 import io
-
-# import tensorflow as tf
+import tensorflow as tf
 
 header = st.container()
 data_desc = st.container()
