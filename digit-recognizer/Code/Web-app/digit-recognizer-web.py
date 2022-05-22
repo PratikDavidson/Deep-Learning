@@ -4,17 +4,38 @@ import numpy as np
 import matplotlib.pyplot as plt
 import keras
 from PIL import Image
-import tensorflow as tf
+from google.oauth2 import service_account
+from google.cloud import storage
+import io
+
+# import tensorflow as tf
 
 header = st.container()
 data_desc = st.container()
 model_desc = st.container()
 results = st.container()
 
+# Create API client.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+client = storage.Client(credentials=credentials)
+bucket_name = "digit-recognizer-data"
+
+
+# @st.experimental_memo(ttl=600)
+def read_file(file_path, flag=False):
+    bucket = client.bucket(bucket_name)
+    if flag:
+        content = bucket.blob(file_path).download_as_bytes().decode('utf-8')
+    else:
+        content = bucket.blob(file_path).download_as_bytes()
+    return content
+
 
 @st.cache
 def load_data():
-    data = pd.read_csv('D:\\ML\\DL Repo\\digit-recognizer\\data\\train.csv')
+    data = pd.read_csv(io.BytesIO(read_file('data/train.csv')), sep=',')
     return data
 
 
@@ -27,17 +48,17 @@ def image_show(img, class_label):
 
 @st.cache
 def model_data():
-    fcnn = keras.models.load_model('D:\\ML\DL Repo\\digit-recognizer\\model\\Saved Models\\best_FCNN_model.h5')
-    _1d_cnn = keras.models.load_model('D:\\ML\DL Repo\\digit-recognizer\\model\\Saved Models\\best_1D_CNN_model.h5')
-    _2d_cnn = keras.models.load_model('D:\\ML\DL Repo\\digit-recognizer\\model\\Saved Models\\best_2D_CNN_model.h5')
+    fcnn = keras.models.load_model(io.BytesIO(read_file('model/Saved models/best_FCNN_model.h5')))
+    _1d_cnn = keras.models.load_model(io.BytesIO(read_file('model/Saved models/best_1D_CNN_model.h5')))
+    _2d_cnn = keras.models.load_model(io.BytesIO(read_file('model/Saved models/best_2D_CNN_model.h5')))
     return fcnn, _1d_cnn, _2d_cnn
 
 
 @st.cache
 def load_image_plots():
-    image_plots_fcnn = Image.open('D:\\ML\\DL Repo\\digit-recognizer\\model\\Saved Plots\\model_plot_FCNN.png')
-    image_plots_1d_cnn = Image.open('D:\\ML\\DL Repo\\digit-recognizer\\model\\Saved Plots\\model_plot_1D_CNN.png')
-    image_plots_2d_cnn = Image.open('D:\\ML\\DL Repo\\digit-recognizer\\model\\Saved Plots\\model_plot_2D_CNN.png')
+    image_plots_fcnn = Image.open(io.BytesIO(read_file('model/Saved plots/model_plot_FCNN.png')))
+    image_plots_1d_cnn = Image.open(io.BytesIO(read_file('model/Saved plots/model_plot_1D_CNN.png')))
+    image_plots_2d_cnn = Image.open(io.BytesIO(read_file('model/Saved plots/model_plot_2D_CNN.png')))
     # res_FCNN_image_plots = FCNN_image_plots.resize((500,500))
     # res_1D_CNN_image_plots = _1D_CNN_image_plots.resize((500, 500))
     # res_2D_CNN_image_plots = _2D_CNN_image_plots.resize((500, 500))
@@ -45,8 +66,7 @@ def load_image_plots():
 
 
 def model_summary(model_type):
-    with open('D:\\ML\\DL Repo\\digit-recognizer\\model\\Saved summary\\' + model_type + '_model_summary.txt') as f:
-        st.markdown(f.read())
+    st.markdown(read_file('model/Saved summary/' + model_type + '_model_summary.txt', flag=True))
 
 
 def plot(history):
@@ -60,17 +80,17 @@ def plot(history):
     plt.legend(["train", "val"], loc="best")
     return fig
 
+
 def model_history(model_type):
     history = pd.read_csv(
-        'D:\\ML\DL Repo\\digit-recognizer\\model\\Saved training data\\' + model_type + '_model_history.csv')
+        io.BytesIO(read_file('model/Saved training data/' + model_type + '_model_history.csv')), sep=',')
     best_val_loss = np.argmin(np.array(history['val_loss']))
     return history, best_val_loss
 
-with st.sidebar:
-    photo = st.image(Image.open('D:\\ML\\DL Repo\\me.jpg').resize((300, 300)))
-    with open('D:\\ML\\DL Repo\\about_me.md') as f:
-        st.markdown(f.read())
 
+with st.sidebar:
+    photo = st.image(Image.open(io.BytesIO(read_file('me.jpg'))).resize((300, 300)))
+    st.markdown(read_file('about_me.md', flag=True))
 
 with header:
     st.title('Kaggle - Digit Recognizer')
@@ -147,7 +167,7 @@ with model_desc:
         st.markdown('#### Model Results:')
         col_1, col_2 = st.columns(2)
         history, best_val_loss_idx = model_history('1D_CNN')
-        best_acc = round(history['val_accuracy'].iloc[best_val_loss_idx]*100, 2)
+        best_acc = round(history['val_accuracy'].iloc[best_val_loss_idx] * 100, 2)
         with col_1:
             st.pyplot(plot(history))
         with col_2:
