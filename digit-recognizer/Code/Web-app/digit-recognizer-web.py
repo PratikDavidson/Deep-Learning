@@ -84,8 +84,8 @@ def model_history(model_type):
     return history, best_val_loss
 
 
-with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+st.markdown(f'<style>{read_file("style.css",flag=True)}</style>', unsafe_allow_html=True)
 
 with st.sidebar:
     photo = st.image(Image.open(io.BytesIO(read_file('me.png'))).resize((300, 300)))
