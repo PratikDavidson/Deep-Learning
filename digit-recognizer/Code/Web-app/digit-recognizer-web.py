@@ -9,10 +9,7 @@ from google.cloud import storage
 import io
 import tensorflow as tf
 
-header = st.container()
-data_desc = st.container()
-model_desc = st.container()
-results = st.container()
+st.set_page_config(page_title='Kaggle - Digit Recognizer')
 
 # Create API client.
 credentials = service_account.Credentials.from_service_account_info(
@@ -87,17 +84,25 @@ def model_history(model_type):
     return history, best_val_loss
 
 
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 with st.sidebar:
-    photo = st.image(Image.open(io.BytesIO(read_file('me.jpg'))).resize((300, 300)))
+    photo = st.image(Image.open(io.BytesIO(read_file('me.png'))).resize((300, 300)))
     st.markdown(read_file('about_me.md', flag=True))
+
+
+header = st.container()
+data_desc = st.container()
+model_desc = st.container()
+results = st.container()
 
 with header:
     st.title('Kaggle - Digit Recognizer')
     st.header('Description')
-    st.write(
-        'Digit Recognizer is based on identifying handwritten digits from the "Hello World!" dataset in computer '
-        'vision (MNIST).',
-        align_text='center')
+    st.write('<div style="text-align:justify">' +
+             '''Digit Recognizer is based on identifying handwritten digits from the "Hello World!" dataset in computer 
+             vision (MNIST).''' + '<div>', unsafe_allow_html=True)
 
 with data_desc:
     train_data = load_data()
@@ -106,17 +111,20 @@ with data_desc:
         'The dataset used in this project can be downloaded from [here]('
         'https://www.kaggle.com/competitions/digit-recognizer/data).',
         align_text='center')
-    st.write(
-        'The data files train.csv and test.csv contain 42000 and 28000 gray-scale images of hand-drawn digits '
-        'respectively, from zero through nine.',
-        align_text='center')
-    st.write(
-        'Each image is 28 pixels in height and 28 pixels in width, for a total of 784 pixels in total. Each pixel has '
-        'a single pixel-value associated with it, indicating the lightness or darkness of that pixel, with higher '
-        'numbers meaning darker. This pixel-value is an integer between 0 and 255, inclusive. The training data set, '
-        '(train.csv), has 785 columns. The first column, called "label", is the digit that was drawn by the user. The '
-        'rest of the columns contain the pixel-values of the associated image.',
-        align_text='center')
+
+    st.markdown('<div style="text-align:justify">' + '''<p>
+             The data files train.csv and test.csv contain 42000 and 28000
+             gray-scale images of hand-drawn digits respectively, from zero through nine.</p>''' + '</div>',
+                unsafe_allow_html=True)
+
+    st.markdown('<div style="text-align:justify">' + '''<p>Each image is 28 pixels in height and 28 pixels in width, 
+         for a total of 784 pixels in total. Each pixel has a single pixel-value associated with it, indicating the 
+         lightness or darkness of that pixel, with higher numbers meaning darker. This pixel-value is an integer between
+         0 and 255. The training data set has 785 columns. The first column, called "label", 
+         represents the target. The rest of the columns contain the pixel-values of the associated 
+         image represents input features. Below is how train data looks like and the images of respective row data.</p>''' + '</div>',
+                unsafe_allow_html=True)
+
     st.write(train_data.head(6))
     img_section_1 = st.container()
     img_section_2 = st.container()
@@ -187,8 +195,7 @@ with model_desc:
 
 with results:
     st.header('Conclusion')
-    st.write(
-        '2D-CNN performed far better in comparison to other two models with least learning parameters whereas 1D-CNN '
-        'though performed a little bit better than FCNN but the overall advantage was less learning parameters '
-        'compared to FCNN.',
-        align_text='center')
+    st.markdown('<div style="text-align:justify">' +
+                '2D-CNN performed far better in comparison to other two models with least learning parameters whereas 1D-CNN '
+                'though performed a little bit better than FCNN but the overall advantage was less learning parameters '
+                'compared to FCNN.' + '</div>', unsafe_allow_html=True)
