@@ -9,7 +9,7 @@ from google.cloud import storage
 import io
 import tensorflow as tf
 
-st.set_page_config(page_title='Kaggle - Digit Recognizer')
+st.set_page_config(page_title='Deep Learning - Digit Recognizer')
 
 # Create API client.
 credentials = service_account.Credentials.from_service_account_info(
@@ -29,7 +29,7 @@ def read_file(file_path, flag=False):
     return content
 
 
-@st.cache
+@st.experimental_memo()
 def load_data():
     data = pd.read_csv(io.BytesIO(read_file('data/train.csv')), sep=',')
     return data
@@ -42,7 +42,7 @@ def image_show(img, class_label):
     st.pyplot(fig)
 
 
-@st.cache
+@st.experimental_memo()
 def model_data():
     fcnn = keras.models.load_model(io.BytesIO(read_file('model/Saved models/best_FCNN_model.h5')))
     _1d_cnn = keras.models.load_model(io.BytesIO(read_file('model/Saved models/best_1D_CNN_model.h5')))
@@ -50,7 +50,7 @@ def model_data():
     return fcnn, _1d_cnn, _2d_cnn
 
 
-@st.cache
+@st.experimental_memo()
 def load_image_plots():
     image_plots_fcnn = Image.open(io.BytesIO(read_file('model/Saved plots/model_plot_FCNN.png')))
     image_plots_1d_cnn = Image.open(io.BytesIO(read_file('model/Saved plots/model_plot_1D_CNN.png')))
@@ -77,6 +77,7 @@ def plot(history):
     return fig
 
 
+@st.experimental_memo()
 def model_history(model_type):
     history = pd.read_csv(
         io.BytesIO(read_file('model/Saved training data/' + model_type + '_model_history.csv')), sep=',')
@@ -84,13 +85,18 @@ def model_history(model_type):
     return history, best_val_loss
 
 
-
-st.markdown(f'<style>{read_file("style.css",flag=True)}</style>', unsafe_allow_html=True)
+st.markdown(f'<style>{read_file("style.css", flag=True)}</style>', unsafe_allow_html=True)
 
 with st.sidebar:
     photo = st.image(Image.open(io.BytesIO(read_file('me.png'))).resize((300, 300)))
-    st.markdown(read_file('about_me.md', flag=True))
-
+    col_1, col_2, col_3 = st.columns([1.5,5,1])
+    with col_1:
+        pass
+    with col_2:
+        st.markdown('# Pratik Davidson')
+    with col_3:
+        pass
+    st.info(read_file('about_me.md', flag=True))
 
 header = st.container()
 data_desc = st.container()
@@ -101,28 +107,24 @@ with header:
     st.title('Kaggle - Digit Recognizer')
     st.header('Description')
     st.write('<div style="text-align:justify">' +
-             '''Digit Recognizer is based on identifying handwritten digits from the "Hello World!" dataset in computer 
-             vision (MNIST).''' + '<div>', unsafe_allow_html=True)
+             '''Digit Recognizer is based on identifying handwritten digits from the "Hello World!" dataset(MNIST) in computer 
+             vision.''' + '<div>', unsafe_allow_html=True)
 
 with data_desc:
     train_data = load_data()
     st.header('Dataset')
     st.write(
-        'The dataset used in this project can be downloaded from [here]('
-        'https://www.kaggle.com/competitions/digit-recognizer/data).',
+        '''The dataset was taken from [Digit Recognizer competition](
+        https://www.kaggle.com/competitions/digit-recognizer/overview) on Kaggle.''',
         align_text='center')
 
-    st.markdown('<div style="text-align:justify">' + '''<p>
-             The data files train.csv and test.csv contain 42000 and 28000
-             gray-scale images of hand-drawn digits respectively, from zero through nine.</p>''' + '</div>',
-                unsafe_allow_html=True)
-
-    st.markdown('<div style="text-align:justify">' + '''<p>Each image is 28 pixels in height and 28 pixels in width, 
-         for a total of 784 pixels in total. Each pixel has a single pixel-value associated with it, indicating the 
-         lightness or darkness of that pixel, with higher numbers meaning darker. This pixel-value is an integer between
-         0 and 255. The training data set has 785 columns. The first column, called "label", 
-         represents the target. The rest of the columns contain the pixel-values of the associated 
-         image represents input features. Below is how train data looks like and the images of respective row data.</p>''' + '</div>',
+    st.markdown('<div style="text-align:justify">' + '''<p>The training dataset consists of 42000 gray-scale images of 
+                 hand-drawn digits from zero through nine respectively. The first 
+                 column, named "label", represents the digit. The rest of the columns represents the pixel values of the 
+                 associated image of the digits in total 784 pixels for each. These 784 pixels after reshaping can 
+                 represent an image of 28 pixels in height and 28 pixels in width with each
+                 pixels value ranging between 0 and 255 that is the grayscale range.
+                 Below is how the train data looks like and the images of respective row data.</p>''' + '</div>',
                 unsafe_allow_html=True)
 
     st.write(train_data.head(6))
@@ -195,7 +197,11 @@ with model_desc:
 
 with results:
     st.header('Conclusion')
-    st.markdown('<div style="text-align:justify">' +
+    st.markdown('<div style="text-align:justify">' + '<p>' +
                 '2D-CNN performed far better in comparison to other two models with least learning parameters whereas 1D-CNN '
                 'though performed a little bit better than FCNN but the overall advantage was less learning parameters '
-                'compared to FCNN.' + '</div>', unsafe_allow_html=True)
+                'compared to FCNN.' + '</p>' + '</div>', unsafe_allow_html=True)
+    st.write(
+        '''You can find the notebook codes for the DL models from my [Github link](
+        https://github.com/PratikDavidson/Deep-Learning/tree/master/digit-recognizer).''',
+        align_text='center')
