@@ -1,4 +1,6 @@
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/pratikdavidson/deep-learning/digit-recognizer/Code/Web-app/digit-recognizer-web.py)
+
 # Kaggle - Digit Recognizer
 
 Goal - To study three models performance in computer vision problem (Digit Recognizer).
@@ -20,6 +22,3 @@ Goal - To study three models performance in computer vision problem (Digit Recog
 ## Result
 
 - 2D-CNN performed far better in comparision to other two models with least learning parameters whereas 1D-CNN though performed a little bit better than FCNN but the overall advantage was less learning parameters compared to FCNN.
-
-🌟 Streamlit web application for this project can be accessed through [link](https://share.streamlit.io/pratikdavidson/deep-learning/digit-recognizer/Code/Web-app/digit-recognizer-web.py).
-
